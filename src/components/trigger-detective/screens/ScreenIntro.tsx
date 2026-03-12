@@ -14,8 +14,8 @@ const ScreenIntro = ({ onNext, onBack }: Props) => {
         Every craving leaves a clue.
       </p>
 
-      <div className="flex justify-center my-4">
-        <img src={detectiveIcon} alt="Detective magnifying glass" className="w-24 h-24" />
+      <div className="flex justify-center my-6">
+        <img src={detectiveIcon} alt="Detective magnifying glass" className="w-36 h-36" />
       </div>
 
       <div className="text-justified text-foreground font-body text-[15px] leading-relaxed space-y-3 mb-8">
