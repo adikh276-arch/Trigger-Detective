@@ -6,9 +6,15 @@ interface Props {
   data: TriggerData;
   onNext: () => void;
   onBack: () => void;
+  onSave: () => void;
 }
 
-const ScreenSummary = ({ data, onNext, onBack }: Props) => {
+const ScreenSummary = ({ data, onNext, onBack, onSave }: Props) => {
+  const handleSave = () => {
+    onSave();
+    alert("Entry saved! ✅");
+  };
+
   return (
     <ScreenLayout onBack={onBack} title="Nice work, detective 🕵️">
       <div className="text-justified text-foreground font-body text-[15px] leading-relaxed space-y-3 mb-6">
@@ -27,6 +33,10 @@ const ScreenSummary = ({ data, onNext, onBack }: Props) => {
           <span className="font-body font-medium text-sm text-foreground">Triggers Logged</span>
           <span className="font-heading font-bold text-lg text-foreground">{data.triggers.length}</span>
         </div>
+        <div className="flex justify-between items-center border-b border-border pb-2">
+          <span className="font-body font-medium text-sm text-foreground">Location</span>
+          <span className="font-body text-sm text-muted-foreground">{data.location || "—"}</span>
+        </div>
         <div className="flex justify-between items-center">
           <span className="font-body font-medium text-sm text-foreground">Mood Logged</span>
           <span className="font-body text-sm text-muted-foreground">
@@ -36,8 +46,8 @@ const ScreenSummary = ({ data, onNext, onBack }: Props) => {
       </div>
 
       <div className="mt-auto pb-6 space-y-3">
-        <PrimaryButton onClick={() => alert("Entry saved!")}>Save Entry</PrimaryButton>
-        <PrimaryButton onClick={onNext} variant="secondary">Try Urge Shield</PrimaryButton>
+        <PrimaryButton onClick={handleSave}>Save Entry</PrimaryButton>
+        <PrimaryButton onClick={onNext} variant="secondary">View Patterns</PrimaryButton>
       </div>
     </ScreenLayout>
   );

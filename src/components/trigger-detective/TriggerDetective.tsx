@@ -7,6 +7,8 @@ import ScreenContext from "./screens/ScreenContext";
 import ScreenEmotion from "./screens/ScreenEmotion";
 import ScreenSummary from "./screens/ScreenSummary";
 import ScreenPatterns from "./screens/ScreenPatterns";
+import ScreenHistory from "./screens/ScreenHistory";
+import { saveEntry } from "./triggerStorage";
 
 export interface TriggerData {
   urgeLevel: number;
@@ -33,14 +35,19 @@ const TriggerDetective = () => {
     setData((prev) => ({ ...prev, ...partial }));
   };
 
+  const handleSaveEntry = () => {
+    saveEntry(data);
+  };
+
   const screens = [
     <ScreenIntro key="intro" onNext={next} onBack={back} />,
     <ScreenUrgeLevel key="urge" data={data} updateData={updateData} onNext={next} onBack={back} />,
     <ScreenTriggers key="triggers" data={data} updateData={updateData} onNext={next} onBack={back} />,
     <ScreenContext key="context" data={data} updateData={updateData} onNext={next} onBack={back} />,
     <ScreenEmotion key="emotion" data={data} updateData={updateData} onNext={next} onBack={back} />,
-    <ScreenSummary key="summary" data={data} onNext={next} onBack={back} />,
-    <ScreenPatterns key="patterns" data={data} onBack={back} />,
+    <ScreenSummary key="summary" data={data} onNext={next} onBack={back} onSave={handleSaveEntry} />,
+    <ScreenPatterns key="patterns" data={data} onBack={back} onViewHistory={() => setStep(7)} />,
+    <ScreenHistory key="history" onBack={back} />,
   ];
 
   return (
