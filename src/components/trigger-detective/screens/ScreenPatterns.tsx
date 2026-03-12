@@ -17,7 +17,6 @@ const ScreenPatterns = ({ data, onBack }: Props) => {
 
       {/* Insights */}
       <div className="space-y-3 mb-6">
-        <InsightCard emoji="🌙" text="Most urges appear in the evening" />
         <InsightCard emoji="😰" text="Stress shows up as a common trigger" />
         <InsightCard emoji="🧍" text="Urges appear often when you are alone" />
       </div>
