@@ -39,26 +39,9 @@ const ScreenPatterns = ({ data, onBack }: Props) => {
         </div>
       </div>
 
-      {/* Time heatmap */}
-      <div className="bg-card rounded-xl shadow-md p-5 mb-8">
-        <h3 className="font-heading text-sm font-bold text-foreground mb-3">Time of Day</h3>
-        <div className="grid grid-cols-4 gap-2">
-          {["Morning", "Afternoon", "Evening", "Night"].map((time, i) => (
-            <div
-              key={time}
-              className="rounded-lg p-3 text-center"
-              style={{
-                backgroundColor: `hsl(16 100% 66% / ${[0.15, 0.25, 0.7, 0.45][i]})`,
-              }}
-            >
-              <span className="text-xs font-body font-medium text-foreground">{time}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-auto pb-6">
+      <div className="mt-auto pb-6 space-y-3">
         <PrimaryButton onClick={() => alert("View progress")}>View My Progress</PrimaryButton>
+        <PrimaryButton onClick={() => window.location.href = "/"} variant="secondary">Back to Home</PrimaryButton>
       </div>
     </ScreenLayout>
   );

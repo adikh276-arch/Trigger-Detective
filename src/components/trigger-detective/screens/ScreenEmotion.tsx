@@ -44,6 +44,22 @@ const ScreenEmotion = ({ data, updateData, onNext, onBack }: Props) => {
         onToggle={toggle}
       />
 
+      <input
+        type="text"
+        placeholder="Or type how you're feeling…"
+        value={customMood}
+        onChange={(e) => setCustomMood(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && customMood.trim()) {
+            if (!selected.includes(customMood.trim())) {
+              setSelected((prev) => [...prev, customMood.trim()]);
+            }
+            setCustomMood("");
+          }
+        }}
+        className="mt-4 w-full px-4 py-3.5 rounded-lg border border-input bg-card text-foreground font-body text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30"
+      />
+
       <div className="mt-auto pb-6 pt-6">
         <PrimaryButton onClick={handleNext}>Log Trigger</PrimaryButton>
       </div>
