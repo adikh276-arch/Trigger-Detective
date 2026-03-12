@@ -18,6 +18,7 @@ const EMOTION_OPTIONS = [
 
 const ScreenEmotion = ({ data, updateData, onNext, onBack }: Props) => {
   const [selected, setSelected] = useState<string[]>(data.emotions);
+  const [customMood, setCustomMood] = useState("");
 
   const toggle = (option: string) => {
     setSelected((prev) =>
