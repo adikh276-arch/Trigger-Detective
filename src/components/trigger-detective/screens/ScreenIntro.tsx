@@ -1,6 +1,6 @@
 import ScreenLayout from "../ScreenLayout";
 import PrimaryButton from "../PrimaryButton";
-import detectiveIcon from "@/assets/detective-icon.png";
+import detectiveIcon from "@/assets/detective-icon-v2.png";
 
 interface Props {
   onNext: () => void;
