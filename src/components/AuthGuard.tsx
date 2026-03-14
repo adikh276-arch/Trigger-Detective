@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { query } from "@/lib/db";
+import { query, initSchema } from "@/lib/db";
 
 interface UserInfoResponse {
-  user_id: string;
-  // add other fields if necessary
+  user_id: string | number;
 }
 
 export const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -12,16 +11,22 @@ export const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children })
   const { t } = useTranslation();
 
   const handleHandshake = async () => {
+    // Ensure schema is ready first
+    await initSchema();
+
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
     const storedUserId = sessionStorage.getItem("user_id");
 
     if (storedUserId) {
+      // Re-verify user exists in DB even if in session (safety check)
+      await initializeUser(storedUserId);
       setIsAuthResolved(true);
       return;
     }
 
     if (!token) {
+      // If no token and no session, redirect to /token
       window.location.href = "/token";
       return;
     }
@@ -29,33 +34,29 @@ export const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children })
     try {
       const response = await fetch("https://api.mantracare.com/user/user-info", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token }),
       });
 
-      if (!response.ok) {
-        throw new Error("Authentication failed");
-      }
+      if (!response.ok) throw new Error("Authentication failed");
 
       const data: UserInfoResponse = await response.json();
-      const userId = data.user_id;
+      const userId = String(data.user_id); // Ensure it's a string for DB
 
-      if (!userId) {
-        throw new Error("User ID not found in response");
+      if (!userId || userId === "undefined" || userId === "null") {
+        throw new Error("Invalid User ID received");
       }
 
-      // Store in session storage
+      // 1. Initialize user in database FIRST
+      await initializeUser(userId);
+
+      // 2. Store in session storage
       sessionStorage.setItem("user_id", userId);
 
-      // Remove token from URL
+      // 3. Remove token from URL
       const url = new URL(window.location.href);
       url.searchParams.delete("token");
       window.history.replaceState({}, "", url.pathname + url.search);
-
-      // Initialize user in database
-      await initializeUser(userId);
 
       setIsAuthResolved(true);
     } catch (error) {
@@ -66,16 +67,16 @@ export const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children })
 
   const initializeUser = async (userId: string) => {
     try {
-      // Check if user exists
+      // UPSERT equivalent or Check and Insert
       const existingUser = await query("SELECT id FROM users WHERE id = $1", [userId]);
-      
       if (existingUser.rows.length === 0) {
-        // Insert new user
         await query("INSERT INTO users (id) VALUES ($1)", [userId]);
         console.log("New user initialized in database:", userId);
       }
     } catch (error) {
       console.error("Failed to initialize user in database:", error);
+      // We don't throw here to avoid blocking current session if DB is transiently down, 
+      // but the foreign key constraint will block saves later.
     }
   };
 

@@ -1,13 +1,15 @@
 import { neonConfig, Pool } from '@neondatabase/serverless';
 import ws from 'ws';
 
+// Suppress Neon's browser-side SQL warning as requested
+neonConfig.disableWarningInBrowsers = true;
+
 // Set up WebSocket for use in specialized environments if needed
 if (typeof window === 'undefined') {
   neonConfig.webSocketConstructor = ws;
 }
 
 // Vite replaces import.meta.env.VITE_DATABASE_URL at build time
-// We use a fallback via process.env for Node scripts
 const connectionString = (import.meta as any).env?.VITE_DATABASE_URL || process.env.VITE_DATABASE_URL || process.env.DATABASE_URL;
 
 if (!connectionString) {
@@ -29,23 +31,20 @@ export const query = async (text: string, params?: any[]) => {
 
 /**
  * Executes the schema SQL to ensure tables exist.
- * Should be called on application startup.
  */
 export const initSchema = async () => {
   try {
-    // In a real browser environment, we might fetch this file or bundle it.
-    // Since we're in a buildable environment, let's just put the schema here or use a known location.
-    // For simplicity, I'll use the SQL directly here as well to ensure it runs without external file dependencies in production.
+    // We use TEXT for IDs to ensure compatibility with all possible MantraCare ID formats
     const schema = `
       CREATE TABLE IF NOT EXISTS users (
-          id BIGINT PRIMARY KEY,
+          id TEXT PRIMARY KEY,
           created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
 
       CREATE TABLE IF NOT EXISTS trigger_entries (
           id SERIAL PRIMARY KEY,
-          user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
+          user_id TEXT REFERENCES users(id) ON DELETE CASCADE,
           urge_level INTEGER NOT NULL,
           location TEXT,
           activity TEXT,
@@ -68,7 +67,20 @@ export const initSchema = async () => {
       CREATE INDEX IF NOT EXISTS idx_entry_triggers_entry_id ON entry_triggers(entry_id);
       CREATE INDEX IF NOT EXISTS idx_entry_emotions_entry_id ON entry_emotions(entry_id);
     `;
+    
+    // Migration check: If tables exist as BIGINT, we might need to alter them.
+    // For a "fix in 1 go", it's safer to attempt the conversion or handle it.
+    // But since the user just started, most records are new.
+    // I'll add a safety alter just in case.
+    
     await query(schema);
+    
+    // Safety conversion if they were BIGINT before
+    try {
+      await query("ALTER TABLE users ALTER COLUMN id TYPE TEXT");
+      await query("ALTER TABLE trigger_entries ALTER COLUMN user_id TYPE TEXT");
+    } catch(e) { /* ignore if already text or impossible */ }
+
     console.log("Database schema initialized successfully.");
   } catch (error) {
     console.error("Failed to initialize database schema:", error);

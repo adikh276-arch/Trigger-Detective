@@ -30,11 +30,6 @@ const TriggerDetective = () => {
     emotions: [],
   });
 
-  useEffect(() => {
-    // Initialize schema on first load
-    initSchema();
-  }, []);
-
   const next = () => setStep((s) => s + 1);
   // User requested: "the back button should take to activity home page only"
   const backToStart = () => {
