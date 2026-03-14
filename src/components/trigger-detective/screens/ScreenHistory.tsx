@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import ScreenLayout from "../ScreenLayout";
 import PrimaryButton from "../PrimaryButton";
 import type { TriggerEntry } from "../triggerStorage";
@@ -9,6 +10,7 @@ interface Props {
 }
 
 const ScreenHistory = ({ onBack }: Props) => {
+  const { t, i18n } = useTranslation();
   const [entries, setEntries] = useState<TriggerEntry[]>([]);
 
   useEffect(() => {
@@ -16,11 +18,11 @@ const ScreenHistory = ({ onBack }: Props) => {
   }, []);
 
   return (
-    <ScreenLayout onBack={onBack} title="Your Log History">
+    <ScreenLayout onBack={onBack} title={t("history_title")}>
       {entries.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center text-center py-12">
           <span className="text-5xl mb-4">🔍</span>
-          <p className="font-body text-muted-foreground text-sm">No entries yet. Complete an investigation to see your history here.</p>
+          <p className="font-body text-muted-foreground text-sm">{t("history_empty")}</p>
         </div>
       ) : (
         <div className="space-y-4 mb-6">
@@ -28,10 +30,10 @@ const ScreenHistory = ({ onBack }: Props) => {
             <div key={i} className="bg-card rounded-xl shadow-md p-4 space-y-2">
               <div className="flex justify-between items-center">
                 <span className="font-heading font-bold text-sm text-foreground">
-                  Entry #{entries.length - i}
+                  {t("history_entry_num")}{entries.length - i}
                 </span>
                 <span className="font-body text-xs text-muted-foreground">
-                  {new Date(entry.timestamp).toLocaleDateString("en-US", {
+                  {new Date(entry.timestamp).toLocaleDateString(i18n.language, {
                     month: "short",
                     day: "numeric",
                     hour: "2-digit",
@@ -42,18 +44,18 @@ const ScreenHistory = ({ onBack }: Props) => {
 
               <div className="grid grid-cols-2 gap-2 text-sm font-body">
                 <div>
-                  <span className="text-muted-foreground text-xs">Urge Level</span>
+                  <span className="text-muted-foreground text-xs">{t("history_urge_label")}</span>
                   <p className="font-heading font-bold text-foreground">{entry.urgeLevel}/10</p>
                 </div>
                 <div>
-                  <span className="text-muted-foreground text-xs">Location</span>
+                  <span className="text-muted-foreground text-xs">{t("history_location_label")}</span>
                   <p className="text-foreground">{entry.location || "—"}</p>
                 </div>
               </div>
 
               {entry.triggers.length > 0 && (
                 <div>
-                  <span className="text-muted-foreground text-xs font-body">Triggers</span>
+                  <span className="text-muted-foreground text-xs font-body">{t("history_triggers_label")}</span>
                   <div className="flex flex-wrap gap-1.5 mt-1">
                     {entry.triggers.map((t) => (
                       <span key={t} className="px-2.5 py-1 rounded-full bg-secondary/30 text-xs font-body text-foreground">
@@ -66,7 +68,7 @@ const ScreenHistory = ({ onBack }: Props) => {
 
               {entry.emotions.length > 0 && (
                 <div>
-                  <span className="text-muted-foreground text-xs font-body">Mood</span>
+                  <span className="text-muted-foreground text-xs font-body">{t("history_mood_label")}</span>
                   <div className="flex flex-wrap gap-1.5 mt-1">
                     {entry.emotions.map((e) => (
                       <span key={e} className="px-2.5 py-1 rounded-full bg-accent text-xs font-body text-foreground">
@@ -79,7 +81,7 @@ const ScreenHistory = ({ onBack }: Props) => {
 
               {entry.activity && (
                 <div>
-                  <span className="text-muted-foreground text-xs font-body">Activity</span>
+                  <span className="text-muted-foreground text-xs font-body">{t("history_activity_label")}</span>
                   <p className="text-foreground text-sm font-body">{entry.activity}</p>
                 </div>
               )}
@@ -89,7 +91,7 @@ const ScreenHistory = ({ onBack }: Props) => {
       )}
 
       <div className="mt-auto pb-6">
-        <PrimaryButton onClick={() => window.location.href = "/"}>Start New Investigation</PrimaryButton>
+        <PrimaryButton onClick={() => window.location.href = "/"}>{t("history_new_btn")}</PrimaryButton>
       </div>
     </ScreenLayout>
   );

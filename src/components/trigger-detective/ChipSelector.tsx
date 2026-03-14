@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 interface ChipSelectorProps {
   options: string[];
@@ -9,6 +10,7 @@ interface ChipSelectorProps {
 }
 
 const ChipSelector = ({ options, selected, onToggle, allowCustom, onAddCustom }: ChipSelectorProps) => {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-wrap gap-3">
       {options.map((option) => {
@@ -32,12 +34,12 @@ const ChipSelector = ({ options, selected, onToggle, allowCustom, onAddCustom }:
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => {
-            const custom = prompt("Enter your own trigger:");
+            const custom = prompt(t("chip_custom_prompt"));
             if (custom && onAddCustom) onAddCustom(custom);
           }}
           className="px-4 py-2.5 rounded-chip text-sm font-body font-medium border-2 border-dashed border-muted-foreground/40 text-muted-foreground hover:border-primary/50 transition-colors"
         >
-          + Add my own trigger
+          {t("chip_add_custom")}
         </motion.button>
       )}
     </div>

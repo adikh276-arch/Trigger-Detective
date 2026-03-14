@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import ScreenLayout from "../ScreenLayout";
 import PrimaryButton from "../PrimaryButton";
 import { TriggerData } from "../TriggerDetective";
@@ -12,6 +13,7 @@ interface Props {
 }
 
 const ScreenUrgeLevel = ({ data, updateData, onNext, onBack }: Props) => {
+  const { t } = useTranslation();
   const [level, setLevel] = useState(data.urgeLevel);
 
   const handleNext = () => {
@@ -20,10 +22,10 @@ const ScreenUrgeLevel = ({ data, updateData, onNext, onBack }: Props) => {
   };
 
   return (
-    <ScreenLayout onBack={onBack} title="How strong is the urge right now?">
+    <ScreenLayout onBack={onBack} title={t("urge_title")}>
       <div className="text-justified text-foreground font-body text-[15px] leading-relaxed space-y-2 mb-8">
-        <p>Take a quick moment to check in with yourself.</p>
-        <p>Being honest helps the detective find better clues.</p>
+        <p>{t("urge_para1")}</p>
+        <p>{t("urge_para2")}</p>
       </div>
 
       {/* Dot indicators */}
@@ -55,11 +57,11 @@ const ScreenUrgeLevel = ({ data, updateData, onNext, onBack }: Props) => {
       </div>
 
       <p className="text-center text-muted-foreground font-body text-sm mb-8">
-        Every clue counts.
+        {t("urge_clue")}
       </p>
 
       <div className="mt-auto pb-6">
-        <PrimaryButton onClick={handleNext}>Next</PrimaryButton>
+        <PrimaryButton onClick={handleNext}>{t("common_next")}</PrimaryButton>
       </div>
     </ScreenLayout>
   );

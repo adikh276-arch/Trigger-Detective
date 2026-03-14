@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import ScreenLayout from "../ScreenLayout";
 import PrimaryButton from "../PrimaryButton";
 import ChipSelector from "../ChipSelector";
@@ -11,12 +12,13 @@ interface Props {
   onBack: () => void;
 }
 
-const EMOTION_OPTIONS = [
-  "Stressed", "Bored", "Tired", "Anxious",
-  "Frustrated", "Lonely", "Restless", "Happy",
+const EMOTION_KEYS = [
+  "emotion_stressed", "emotion_bored", "emotion_tired", "emotion_anxious",
+  "emotion_frustrated", "emotion_lonely", "emotion_restless", "emotion_happy",
 ];
 
 const ScreenEmotion = ({ data, updateData, onNext, onBack }: Props) => {
+  const { t } = useTranslation();
   const [selected, setSelected] = useState<string[]>(data.emotions);
   const [customMood, setCustomMood] = useState("");
 
@@ -32,21 +34,21 @@ const ScreenEmotion = ({ data, updateData, onNext, onBack }: Props) => {
   };
 
   return (
-    <ScreenLayout onBack={onBack} title="How are you feeling?">
+    <ScreenLayout onBack={onBack} title={t("emotion_title")}>
       <div className="text-justified text-foreground font-body text-[15px] leading-relaxed space-y-2 mb-6">
-        <p>Our emotions often fuel cravings.</p>
-        <p>Choose anything that matches your current mood.</p>
+        <p>{t("emotion_para1")}</p>
+        <p>{t("emotion_para2")}</p>
       </div>
 
       <ChipSelector
-        options={EMOTION_OPTIONS}
+        options={EMOTION_KEYS.map(key => t(key))}
         selected={selected}
         onToggle={toggle}
       />
 
       <input
         type="text"
-        placeholder="Or type how you're feeling…"
+        placeholder={t("emotion_placeholder")}
         value={customMood}
         onChange={(e) => setCustomMood(e.target.value)}
         onKeyDown={(e) => {
@@ -61,7 +63,7 @@ const ScreenEmotion = ({ data, updateData, onNext, onBack }: Props) => {
       />
 
       <div className="mt-auto pb-6 pt-6">
-        <PrimaryButton onClick={handleNext}>Log Trigger</PrimaryButton>
+        <PrimaryButton onClick={handleNext}>{t("emotion_log_btn")}</PrimaryButton>
       </div>
     </ScreenLayout>
   );

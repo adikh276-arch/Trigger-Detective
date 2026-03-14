@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import ScreenLayout from "../ScreenLayout";
 import PrimaryButton from "../PrimaryButton";
 import ChipSelector from "../ChipSelector";
@@ -11,13 +12,15 @@ interface Props {
   onBack: () => void;
 }
 
-const TRIGGER_OPTIONS = [
-  "Stress", "Boredom", "Loneliness", "Anxiety", "Social pressure",
-  "Routine / habit", "Celebration", "Seeing someone else do it",
-  "Specific place", "Specific time of day",
+const TRIGGER_KEYS = [
+  "trigger_option_stress", "trigger_option_boredom", "trigger_option_loneliness", 
+  "trigger_option_anxiety", "trigger_option_social_pressure",
+  "trigger_option_routine", "trigger_option_celebration", "trigger_option_seeing_someone",
+  "trigger_option_place", "trigger_option_time",
 ];
 
 const ScreenTriggers = ({ data, updateData, onNext, onBack }: Props) => {
+  const { t } = useTranslation();
   const [selected, setSelected] = useState<string[]>(data.triggers);
 
   const toggle = (option: string) => {
@@ -38,14 +41,14 @@ const ScreenTriggers = ({ data, updateData, onNext, onBack }: Props) => {
   };
 
   return (
-    <ScreenLayout onBack={onBack} title="What might have triggered this?">
+    <ScreenLayout onBack={onBack} title={t("triggers_title")}>
       <div className="text-justified text-foreground font-body text-[15px] leading-relaxed space-y-2 mb-6">
-        <p>Most cravings are connected to something happening around us or within us.</p>
-        <p>Select anything that feels relevant.</p>
+        <p>{t("triggers_para1")}</p>
+        <p>{t("triggers_para2")}</p>
       </div>
 
       <ChipSelector
-        options={TRIGGER_OPTIONS}
+        options={TRIGGER_KEYS.map(key => t(key))}
         selected={selected}
         onToggle={toggle}
         allowCustom
@@ -53,7 +56,7 @@ const ScreenTriggers = ({ data, updateData, onNext, onBack }: Props) => {
       />
 
       <div className="mt-auto pb-6 pt-6">
-        <PrimaryButton onClick={handleNext}>Next</PrimaryButton>
+        <PrimaryButton onClick={handleNext}>{t("common_next")}</PrimaryButton>
       </div>
     </ScreenLayout>
   );
