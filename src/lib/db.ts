@@ -6,12 +6,9 @@ if (typeof window === 'undefined') {
   neonConfig.webSocketConstructor = ws;
 }
 
-// For Vite/browser, it replaces the entire string 'import.meta.env.VITE_DATABASE_URL'
-// For Node.js (scripts), it uses process.env
-const connectionString = 
-  (import.meta.env && import.meta.env.VITE_DATABASE_URL) || 
-  process.env.VITE_DATABASE_URL || 
-  process.env.DATABASE_URL;
+// Vite replaces import.meta.env.VITE_DATABASE_URL at build time
+// We use a fallback via process.env for Node scripts
+const connectionString = (import.meta as any).env?.VITE_DATABASE_URL || process.env.VITE_DATABASE_URL || process.env.DATABASE_URL;
 
 if (!connectionString) {
   console.warn("DATABASE_URL is not defined. Database operations will fail.");
