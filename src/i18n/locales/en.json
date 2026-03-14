@@ -83,5 +83,7 @@
   "chip_custom_prompt": "Enter your own trigger:",
   "chip_add_custom": "+ Add my own trigger",
   "common_next": "Next",
-  "common_back": "Back"
+  "common_back": "Back",
+  "auth_validating_session": "Securing your investigation room...",
+  "auth_loading_message": "Preparing your detective tools..."
 }

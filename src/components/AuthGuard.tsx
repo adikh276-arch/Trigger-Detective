@@ -86,12 +86,23 @@ export const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children })
 
   if (!isAuthResolved) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-          <p className="font-heading font-medium text-foreground anim-fade-in">
-            {t("auth_validating_session") || "Validating session..."}
-          </p>
+      <div className="fixed inset-0 flex items-center justify-center bg-background p-6 text-center">
+        <div className="flex flex-col items-center gap-6 max-w-xs transition-all duration-700 animate-in fade-in zoom-in-95">
+          <div className="relative">
+            <div className="w-16 h-16 border-4 border-primary/20 rounded-full"></div>
+            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-xl">🕵️</span>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <h2 className="font-heading font-bold text-xl text-foreground">
+              {t("auth_validating_session") || "Securing your investigation room..."}
+            </h2>
+            <p className="font-body text-muted-foreground text-sm animate-pulse">
+              {t("auth_loading_message") || "Preparing your detective tools..."}
+            </p>
+          </div>
         </div>
       </div>
     );

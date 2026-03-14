@@ -83,5 +83,7 @@
   "chip_custom_prompt": "अपना ट्रिगर स्वयं दर्ज करें:",
   "chip_add_custom": "+ अपना खुद का ट्रिगर जोड़ें",
   "common_next": "अगला",
-  "common_back": "पीछे"
+  "common_back": "पीछे",
+  "auth_validating_session": "आपके जांच कक्ष को सुरक्षित किया जा रहा है...",
+  "auth_loading_message": "जांच के औजार तैयार किए जा रहे हैं..."
 }

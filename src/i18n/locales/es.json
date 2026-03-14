@@ -83,5 +83,7 @@
   "chip_custom_prompt": "Introduce tu propio activador:",
   "chip_add_custom": "+ Añadir mi propio disparador",
   "common_next": "Próximo",
-  "common_back": "Atrás"
+  "common_back": "Atrás",
+  "auth_validating_session": "Asegurando su sala de investigación...",
+  "auth_loading_message": "Preparando sus herramientas de detective..."
 }
