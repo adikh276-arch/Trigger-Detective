@@ -25,6 +25,5 @@ jobs:
           context: .
           push: true
           platforms: linux/amd64
-          tags: bunker.mantracare.com/lovable/trigger_detective:1.0
-          build-args: |
-            VITE_DATABASE_URL=${{ secrets.VITE_DATABASE_URL }}
+          tags: bunker.mantracare.com/lovable/trigger_detective:1.1
+          build-args: VITE_DATABASE_URL=${{ secrets.VITE_DATABASE_URL }}
