@@ -157,7 +157,6 @@ const ScreenPatterns = ({ data, onBack, onViewHistory }: Props) => {
 
       <div className="mt-auto pb-6 space-y-3">
         <PrimaryButton onClick={onViewHistory}>{t("patterns_progress_btn")}</PrimaryButton>
-        <PrimaryButton onClick={() => window.location.href = "/"} variant="secondary">{t("patterns_home_btn")}</PrimaryButton>
       </div>
     </ScreenLayout>
   );
