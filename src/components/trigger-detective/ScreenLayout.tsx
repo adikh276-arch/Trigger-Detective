@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft } from "lucide-react";
 import { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 
 interface ScreenLayoutProps {
   children: ReactNode;
@@ -10,6 +11,7 @@ interface ScreenLayoutProps {
 }
 
 const ScreenLayout = ({ children, onBack, title, showBack = true }: ScreenLayoutProps) => {
+  const { t } = useTranslation();
   return (
     <motion.div
       initial={{ opacity: 0, x: 40 }}
@@ -24,7 +26,7 @@ const ScreenLayout = ({ children, onBack, title, showBack = true }: ScreenLayout
           className="flex items-center gap-1 text-primary font-body font-medium text-sm mb-4 self-start active:scale-95 transition-transform"
         >
           <ChevronLeft className="w-4 h-4" />
-          Back
+          {t("common_back") || "Back"}
         </button>
       )}
       {title && (

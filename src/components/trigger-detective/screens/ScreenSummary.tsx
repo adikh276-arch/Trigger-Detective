@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import ScreenLayout from "../ScreenLayout";
 import PrimaryButton from "../PrimaryButton";
@@ -5,16 +6,20 @@ import { TriggerData } from "../TriggerDetective";
 
 interface Props {
   data: TriggerData;
+  isSaved: boolean;
   onNext: () => void;
   onBack: () => void;
   onSave: () => void;
 }
 
-const ScreenSummary = ({ data, onNext, onBack, onSave }: Props) => {
+const ScreenSummary = ({ data, isSaved, onNext, onBack, onSave }: Props) => {
   const { t } = useTranslation();
-  const handleSave = () => {
-    onSave();
-    alert(t("summary_saved_msg"));
+  const [loading, setLoading] = useState(false);
+
+  const handleSave = async () => {
+    setLoading(true);
+    await onSave();
+    setLoading(false);
   };
 
   return (
@@ -48,8 +53,18 @@ const ScreenSummary = ({ data, onNext, onBack, onSave }: Props) => {
       </div>
 
       <div className="mt-auto pb-6 space-y-3">
-        <PrimaryButton onClick={handleSave}>{t("summary_save_btn")}</PrimaryButton>
-        <PrimaryButton onClick={onNext} variant="secondary">{t("summary_view_patterns_btn")}</PrimaryButton>
+        {!isSaved ? (
+          <PrimaryButton onClick={handleSave} disabled={loading}>
+            {loading ? "..." : t("summary_save_btn")}
+          </PrimaryButton>
+        ) : (
+          <>
+            <div className="bg-green-500/10 border border-green-500/20 text-green-500 rounded-lg p-3 text-center text-sm font-body mb-2">
+              {t("summary_saved_msg")}
+            </div>
+            <PrimaryButton onClick={onNext}>{t("summary_view_patterns_btn")}</PrimaryButton>
+          </>
+        )}
       </div>
     </ScreenLayout>
   );

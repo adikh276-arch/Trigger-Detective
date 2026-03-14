@@ -18,6 +18,10 @@ COPY --from=builder /app/dist /usr/share/nginx/html/trigger_detective
 RUN rm /etc/nginx/conf.d/default.conf
 COPY vite-nginx.conf /etc/nginx/conf.d/nginx.conf
 
+ENV DATABASE_URL=$DATABASE_URL
+ENV NEON_PROJECT_ID=$NEON_PROJECT_ID
+ENV NEON_API_KEY=$NEON_API_KEY
+
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]

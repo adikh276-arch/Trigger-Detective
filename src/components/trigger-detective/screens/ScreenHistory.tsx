@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import ScreenLayout from "../ScreenLayout";
 import PrimaryButton from "../PrimaryButton";
 import type { TriggerEntry } from "../triggerStorage";
-import { getEntries } from "../triggerStorage";
+import { query } from "@/lib/db";
 
 interface Props {
   onBack: () => void;
@@ -12,14 +12,51 @@ interface Props {
 const ScreenHistory = ({ onBack }: Props) => {
   const { t, i18n } = useTranslation();
   const [entries, setEntries] = useState<TriggerEntry[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setEntries(getEntries().reverse());
+    const fetchHistory = async () => {
+      const userId = sessionStorage.getItem("user_id");
+      if (!userId) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const res = await query(`
+          SELECT 
+            te.urge_level as "urgeLevel",
+            te.location,
+            te.activity,
+            te.timestamp,
+            COALESCE(json_agg(DISTINCT tr.trigger_name) FILTER (WHERE tr.trigger_name IS NOT NULL), '[]') as triggers,
+            COALESCE(json_agg(DISTINCT em.emotion_name) FILTER (WHERE em.emotion_name IS NOT NULL), '[]') as emotions
+          FROM trigger_entries te
+          LEFT JOIN entry_triggers tr ON te.id = tr.entry_id
+          LEFT JOIN entry_emotions em ON te.id = em.entry_id
+          WHERE te.user_id = $1
+          GROUP BY te.id
+          ORDER BY te.timestamp DESC
+        `, [userId]);
+
+        setEntries(res.rows);
+      } catch (error) {
+        console.error("Failed to fetch history:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHistory();
   }, []);
 
   return (
     <ScreenLayout onBack={onBack} title={t("history_title")}>
-      {entries.length === 0 ? (
+      {loading ? (
+        <div className="flex-1 flex items-center justify-center p-12">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      ) : entries.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center text-center py-12">
           <span className="text-5xl mb-4">🔍</span>
           <p className="font-body text-muted-foreground text-sm">{t("history_empty")}</p>
